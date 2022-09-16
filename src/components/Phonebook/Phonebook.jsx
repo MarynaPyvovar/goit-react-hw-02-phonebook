@@ -16,13 +16,13 @@ export default class Phonebook extends Component {
         ],
         name: '',
         number: '',
-        filter: ''
+        filter: '',
     }
 
     handleChange = (e) => {
     const { name, value } = e.target;
     this.setState({
-        [name]: value
+        [name]: value,
     })
     }
 
