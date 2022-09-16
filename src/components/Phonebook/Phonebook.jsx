@@ -16,14 +16,34 @@ export default class Phonebook extends Component {
         ],
         name: '',
         number: '',
-        filter: '',
+        filter: ''
     }
 
     handleChange = (e) => {
     const { name, value } = e.target;
     this.setState({
-        [name]: value,
+        [name]: value
     })
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const { name, number } = this.state;
+        
+        if (this.contactAlreadyExists(name, number)) {
+        return alert(`${name} ${number} is already in Phonebook`);
+        }
+
+        this.setState(prev => {
+            const { name, number, contacts } = prev;
+            const newContact = { id: nanoid(), name, number };
+
+            return {
+                contacts: [newContact, ...contacts],
+                name: '',
+                number: ''
+            }
+        })
     }
     
     getFilteredContacts() {
@@ -44,16 +64,28 @@ export default class Phonebook extends Component {
     return filteredContacts;
     }
 
+    contactAlreadyExists(name, number) {
+    return this.state.contacts.find((item) => item.name.toLocaleLowerCase() === name.toLocaleLowerCase() || item.number === number);
+    }
+
+    removeContact = (contactId) => {
+        this.setState(prev => {
+            return { contacts: prev.contacts.filter(item => item.id !== contactId) }
+        })
+    }
+
     render() {
-        const { contacts, name, number, filter } = this.state;
+        const {name, number, filter } = this.state;
         const filteredContacts = this.getFilteredContacts();
     return <div>
         <h1>Phonebook</h1>
-        {/* <ContactForm onChange={this.handleChange} /> */}
-        <form>
+        {/* <ContactForm onChange={this.handleChange} onSubmit={this.handleSubmit} /> */}
+        <form onSubmit={this.handleSubmit}>
             <label>Name
                 <input
                     type="text"
+                    value={name}
+                    onChange={this.handleChange}
                     name="name"
                     pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
                     title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
@@ -62,11 +94,12 @@ export default class Phonebook extends Component {
             <label>Number
                 <input
                     type="tel"
+                    value={number}
+                    onChange={this.handleChange}
                     name="number"
                     pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                     title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-                    required
-/>
+                    required />
             </label>
             <button type='submit'>Add contact</button>
         </form>
@@ -76,11 +109,11 @@ export default class Phonebook extends Component {
         <label>Find contacts by name
             <input type="text"  name="filter" value={filter} onChange={this.handleChange}/>
         </label>
-        {/* <ContactList /> */}
+        {/* <ContactList contacts={filteredContacts} onClick={this.removeContact}/> */}
         <ul>
             {filteredContacts.map(({id, name, number}) => {
                 return <li key={id}>{name}: {number}
-                    <button type='button'>Delete</button>
+                    <button type='button' onClick={()=> this.removeContact(id)}>Delete</button>
                 </li>
             })}
         </ul>
