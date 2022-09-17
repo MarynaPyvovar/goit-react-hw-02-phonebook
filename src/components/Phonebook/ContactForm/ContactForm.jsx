@@ -17,13 +17,10 @@ export default class ContactForm extends Component {
     handleSubmit = (e) => {
         e.preventDefault();
         const { name, number } = this.state;
-        
-        if (this.contactAlreadyExists(name, number)) {
-        return alert(`${name} ${number} is already in Phonebook`);
-        }
 
         this.setState(() => {
             this.props.addContact(name, number)
+            console.log(name)
 
             return {
                 name: '',
@@ -31,11 +28,6 @@ export default class ContactForm extends Component {
             }
         })
     }
-
-    contactAlreadyExists(name, number) {
-    return this.props.contacts.find((item) => item.name.toLocaleLowerCase() === name.toLocaleLowerCase() || item.number === number);
-    }
-
 
     render() {
         return <form onSubmit={this.handleSubmit}>

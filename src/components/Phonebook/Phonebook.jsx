@@ -36,6 +36,10 @@ export default class Phonebook extends Component {
     }
 
     addContact = (name, number) => {
+        if (this.contactAlreadyExists(name, number)) {
+        return alert(`${name} ${number} is already in Phonebook`);
+        }
+
         this.setState(prev => {
             const newContact = { id: nanoid(), name, number };
 
@@ -45,12 +49,16 @@ export default class Phonebook extends Component {
         })
     }
 
+    contactAlreadyExists = (name, number) => {
+    return this.state.contacts.find((item) => item.name.toLocaleLowerCase() === name.toLocaleLowerCase() || item.number === number);
+    }
+
     render() {
         const { contacts, filter } = this.state;
         const filteredContacts = this.getFilteredContacts();
     return <>
         <h1>Phonebook</h1>
-        <ContactForm contacts={contacts} addContact={this.addContact} />
+        <ContactForm addContact={this.addContact} />
 
         <h2>Contacts</h2>
         <Filter value={filter} onChange={this.handleChange} />
