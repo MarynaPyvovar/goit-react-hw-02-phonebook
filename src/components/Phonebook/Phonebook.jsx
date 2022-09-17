@@ -1,6 +1,6 @@
-import React, { Children, Component } from 'react';
+import React, { Component } from 'react';
 import ContactForm from './ContactForm/ContactForm';
-import {ContactList} from './ContactList/ContactList';
+import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 
 import PropTypes from "prop-types";
@@ -8,13 +8,7 @@ import { nanoid } from 'nanoid';
 
 export default class Phonebook extends Component {
     state = {
-        contacts: [{id: nanoid(), name: 'Rosie Simpson', number: '459-12-56'},
-            {id: nanoid(), name: 'Hermione Kline', number: '443-89-12'},
-            {id: nanoid(), name: 'Eden Clements', number: '645-17-79'},
-            {id: nanoid(), name: 'Annie Copeland', number: '227-91-26'},
-        ],
-        // name: '',
-        // number: '',
+        contacts: [],
         filter: '',
     }
 
@@ -25,46 +19,14 @@ export default class Phonebook extends Component {
         })
     }
 
-    handleSubmit = (e) => {
-        e.preventDefault();
-        const { name, number } = this.state;
-        
-        if (this.contactAlreadyExists(name, number)) {
-        return alert(`${name} ${number} is already in Phonebook`);
-        }
-
-        this.setState(prev => {
-            const { name, number, contacts } = prev;
-            const newContact = { id: nanoid(), name, number };
-
-            return {
-                contacts: [newContact, ...contacts],
-                name: '',
-                number: ''
-            }
-        })
-    }
-    
     getFilteredContacts() {
         const { contacts, filter } = this.state;
-    
+
         if (!filter) {
             return contacts;
         }
-
-        const normalizedFilter = filter.toLocaleLowerCase();
         
-        const filteredContacts = contacts.filter(({name}) => {
-            const normalizedName = name.toLocaleLowerCase();
-            const result = normalizedName.includes(normalizedFilter);
-        return result;
-    })
-
-    return filteredContacts;
-    }
-
-    contactAlreadyExists(name, number) {
-    return this.state.contacts.find((item) => item.name.toLocaleLowerCase() === name.toLocaleLowerCase() || item.number === number);
+        return contacts.filter(({name}) => name.toLocaleLowerCase().includes(filter.toLocaleLowerCase()))
     }
 
     removeContact = (contactId) => {
@@ -73,40 +35,27 @@ export default class Phonebook extends Component {
         })
     }
 
+    addContact = (name, number) => {
+        this.setState(prev => {
+            const newContact = { id: nanoid(), name, number };
+
+            return {
+                contacts: [newContact, ...prev.contacts]
+            }
+        })
+    }
+
     render() {
-        const { filter } = this.state;
+        const { contacts, filter } = this.state;
         const filteredContacts = this.getFilteredContacts();
-    return <div>
+    return <>
         <h1>Phonebook</h1>
-        <ContactForm onChange={this.handleChange} onSubmit={this.handleSubmit} />
-        {/* <form onSubmit={this.handleSubmit}>
-            <label>Name
-                <input
-                    type="text"
-                    value={name}
-                    onChange={this.handleChange}
-                    name="name"
-                    pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-                    title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-                    required />
-            </label>
-            <label>Number
-                <input
-                    type="tel"
-                    value={number}
-                    onChange={this.handleChange}
-                    name="number"
-                    pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-                    title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-                    required />
-            </label>
-            <button type='submit'>Add contact</button>
-        </form> */}
+        <ContactForm contacts={contacts} addContact={this.addContact} />
 
         <h2>Contacts</h2>
         <Filter value={filter} onChange={this.handleChange} />
         <ContactList contacts={filteredContacts} onClick={this.removeContact} />
-    </div>
+    </>
     }
 }
 
@@ -117,8 +66,6 @@ Phonebook.propTypes = {
             name: PropTypes.string.isRequired,
             number: PropTypes.string.isRequired,
         })),
-        // name: PropTypes.string.isRequired,
-        // number: PropTypes.string.isRequired,
         filter: PropTypes.string.isRequired,
     }))
 }

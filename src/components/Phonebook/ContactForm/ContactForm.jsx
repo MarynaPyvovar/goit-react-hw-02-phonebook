@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { nanoid } from 'nanoid';
 import PropTypes from "prop-types";
 
 export default class ContactForm extends Component {
     state = {
-        contacts: [],
         name: '',
         number: '',
     }
@@ -24,12 +22,10 @@ export default class ContactForm extends Component {
         return alert(`${name} ${number} is already in Phonebook`);
         }
 
-        this.setState(prev => {
-            const { name, number, contacts } = prev;
-            const newContact = { id: nanoid(), name, number };
+        this.setState(() => {
+            this.props.addContact(name, number)
 
             return {
-                contacts: [newContact, ...contacts],
                 name: '',
                 number: ''
             }
@@ -37,8 +33,9 @@ export default class ContactForm extends Component {
     }
 
     contactAlreadyExists(name, number) {
-    return this.state.contacts.find((item) => item.name.toLocaleLowerCase() === name.toLocaleLowerCase() || item.number === number);
+    return this.props.contacts.find((item) => item.name.toLocaleLowerCase() === name.toLocaleLowerCase() || item.number === number);
     }
+
 
     render() {
         return <form onSubmit={this.handleSubmit}>
@@ -60,8 +57,7 @@ export default class ContactForm extends Component {
                     onChange={this.handleChange}
                     pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
                     title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-                    required
-/>
+                    required />
             </label>
             <button type='submit'>Add contact</button>
         </form>
@@ -70,11 +66,6 @@ export default class ContactForm extends Component {
 
 ContactForm.propTypes = {
     state: PropTypes.objectOf(PropTypes.shape({
-        // contacts: PropTypes.arrayOf(PropTypes.shape({
-        //     id: PropTypes.string.isRequired,
-        //     name: PropTypes.string.isRequired,
-        //     number: PropTypes.string.isRequired,
-        // })),
         name: PropTypes.string.isRequired,
         number: PropTypes.string.isRequired,
     }))
