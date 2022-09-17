@@ -1,13 +1,47 @@
 import React, { Component } from 'react';
+import { nanoid } from 'nanoid';
+import PropTypes from "prop-types";
 
 export default class ContactForm extends Component {
     state = {
+        contacts: [],
         name: '',
         number: '',
     }
-    
+
+    handleChange = (e) => {
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value,
+        })
+    }
+
+    handleSubmit = (e) => {
+        e.preventDefault();
+        const { name, number } = this.state;
+        
+        if (this.contactAlreadyExists(name, number)) {
+        return alert(`${name} ${number} is already in Phonebook`);
+        }
+
+        this.setState(prev => {
+            const { name, number, contacts } = prev;
+            const newContact = { id: nanoid(), name, number };
+
+            return {
+                contacts: [newContact, ...contacts],
+                name: '',
+                number: ''
+            }
+        })
+    }
+
+    contactAlreadyExists(name, number) {
+    return this.state.contacts.find((item) => item.name.toLocaleLowerCase() === name.toLocaleLowerCase() || item.number === number);
+    }
+
     render() {
-        return <form>
+        return <form onSubmit={this.handleSubmit}>
             <label>Name
                 <input
                     type="text"
@@ -32,4 +66,16 @@ export default class ContactForm extends Component {
             <button type='submit'>Add contact</button>
         </form>
     }
+}
+
+ContactForm.propTypes = {
+    state: PropTypes.objectOf(PropTypes.shape({
+        // contacts: PropTypes.arrayOf(PropTypes.shape({
+        //     id: PropTypes.string.isRequired,
+        //     name: PropTypes.string.isRequired,
+        //     number: PropTypes.string.isRequired,
+        // })),
+        name: PropTypes.string.isRequired,
+        number: PropTypes.string.isRequired,
+    }))
 }

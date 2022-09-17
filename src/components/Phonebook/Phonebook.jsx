@@ -1,29 +1,28 @@
-import React, { Component } from 'react';
-// import ContactForm from './ContactForm/ContactForm';
-// import ContactList from './ContactList/ContactList';
-// import { Filter } from './Filter/Filter';
+import React, { Children, Component } from 'react';
+import ContactForm from './ContactForm/ContactForm';
+import {ContactList} from './ContactList/ContactList';
+import { Filter } from './Filter/Filter';
 
-import { nanoid } from 'nanoid';
 import PropTypes from "prop-types";
+import { nanoid } from 'nanoid';
 
 export default class Phonebook extends Component {
     state = {
-        contacts: [
-    {id: nanoid(), name: 'Rosie Simpson', number: '459-12-56'},
-    {id: nanoid(), name: 'Hermione Kline', number: '443-89-12'},
-    {id: nanoid(), name: 'Eden Clements', number: '645-17-79'},
-    {id: nanoid(), name: 'Annie Copeland', number: '227-91-26'},
+        contacts: [{id: nanoid(), name: 'Rosie Simpson', number: '459-12-56'},
+            {id: nanoid(), name: 'Hermione Kline', number: '443-89-12'},
+            {id: nanoid(), name: 'Eden Clements', number: '645-17-79'},
+            {id: nanoid(), name: 'Annie Copeland', number: '227-91-26'},
         ],
-        name: '',
-        number: '',
+        // name: '',
+        // number: '',
         filter: '',
     }
 
     handleChange = (e) => {
-    const { name, value } = e.target;
-    this.setState({
-        [name]: value,
-    })
+        const { name, value } = e.target;
+        this.setState({
+            [name]: value,
+        })
     }
 
     handleSubmit = (e) => {
@@ -75,12 +74,12 @@ export default class Phonebook extends Component {
     }
 
     render() {
-        const {name, number, filter } = this.state;
+        const { filter } = this.state;
         const filteredContacts = this.getFilteredContacts();
     return <div>
         <h1>Phonebook</h1>
-        {/* <ContactForm onChange={this.handleChange} onSubmit={this.handleSubmit} /> */}
-        <form onSubmit={this.handleSubmit}>
+        <ContactForm onChange={this.handleChange} onSubmit={this.handleSubmit} />
+        {/* <form onSubmit={this.handleSubmit}>
             <label>Name
                 <input
                     type="text"
@@ -102,21 +101,11 @@ export default class Phonebook extends Component {
                     required />
             </label>
             <button type='submit'>Add contact</button>
-        </form>
+        </form> */}
 
         <h2>Contacts</h2>
-        {/* <Filter onChange={this.handleChange} value={filter} /> */}
-        <label>Find contacts by name
-            <input type="text"  name="filter" value={filter} onChange={this.handleChange}/>
-        </label>
-        {/* <ContactList contacts={filteredContacts} onClick={this.removeContact}/> */}
-        <ul>
-            {filteredContacts.map(({id, name, number}) => {
-                return <li key={id}>{name}: {number}
-                    <button type='button' onClick={()=> this.removeContact(id)}>Delete</button>
-                </li>
-            })}
-        </ul>
+        <Filter value={filter} onChange={this.handleChange} />
+        <ContactList contacts={filteredContacts} onClick={this.removeContact} />
     </div>
     }
 }
@@ -128,8 +117,8 @@ Phonebook.propTypes = {
             name: PropTypes.string.isRequired,
             number: PropTypes.string.isRequired,
         })),
-        name: PropTypes.string.isRequired,
-        number: PropTypes.string.isRequired,
+        // name: PropTypes.string.isRequired,
+        // number: PropTypes.string.isRequired,
         filter: PropTypes.string.isRequired,
     }))
 }

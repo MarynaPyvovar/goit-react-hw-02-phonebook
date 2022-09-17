@@ -1,9 +1,9 @@
 import React from 'react';
 
-export const Filter = ({handleChange}, {filter}) => {
+export const Filter = ({ value, onChange,}) => {
   return (
     <label>Find contacts by name
-        <input type="text"  name="filter" value={filter} onChange={handleChange}/>
+        <input type="text" name="filter" value={value} onChange={onChange}/>
     </label>
   );
 };
