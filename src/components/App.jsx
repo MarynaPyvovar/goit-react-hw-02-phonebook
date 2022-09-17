@@ -2,7 +2,9 @@ import Phonebook from "./Phonebook/Phonebook";
 
 export const App = () => {
   return (
-    <div>
+    <div style={{
+        padding: '40px',
+      }}>
       <Phonebook />
     </div>
   );
