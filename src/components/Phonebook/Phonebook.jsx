@@ -58,7 +58,7 @@ export default class Phonebook extends Component {
     }
 
     render() {
-        const { contacts, filter } = this.state;
+        const { filter } = this.state;
         const filteredContacts = this.getFilteredContacts();
     return <>
         <h1 className={css.title}>Phonebook</h1>
