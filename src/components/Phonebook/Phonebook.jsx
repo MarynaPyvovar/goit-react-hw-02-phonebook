@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
+import { nanoid } from 'nanoid';
+
 import ContactForm from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
 import { Filter } from './Filter/Filter';
 import css from './Phonebook.module.css'
-
-import PropTypes from "prop-types";
-import { nanoid } from 'nanoid';
 
 export default class Phonebook extends Component {
     state = {
@@ -66,15 +65,4 @@ export default class Phonebook extends Component {
         <ContactList contacts={filteredContacts} onClick={this.removeContact} />
     </>
     }
-}
-
-Phonebook.propTypes = {
-    state: PropTypes.objectOf(PropTypes.shape({
-        contacts: PropTypes.arrayOf(PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
-            number: PropTypes.string.isRequired,
-        })),
-        filter: PropTypes.string.isRequired,
-    }))
 }
